@@ -3,28 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flores Amarillas para Dian 🌻</title>
+  <title>Flores Amarillas para Dian 🌻✨</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
     body {
-      background: radial-gradient(circle at center, #1b263b, #0d1b2a);
-      color: #fff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
       overflow: hidden;
-      height: 100vh;
-      width: 100vw;
-    }
-    #canvas-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
+      background: radial-gradient(circle, #1a0f00 0%, #000000 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
     }
     #overlay {
       position: absolute;
@@ -32,268 +18,203 @@
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 2;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: rgba(13, 27, 42, 0.85);
-      backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.88);
+      z-index: 10;
       transition: opacity 1s ease;
       cursor: pointer;
       text-align: center;
       padding: 20px;
     }
-    #overlay h1 {
+    .sunflower-icon {
+      font-size: 80px;
+      animation: pulse 1.5s infinite alternate;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.15); }
+    }
+    h1 {
+      color: #ffd700;
       font-size: 2.2rem;
-      color: #ffd166;
-      text-shadow: 0 0 15px rgba(255, 209, 102, 0.6);
-      margin-bottom: 15px;
+      margin-top: 20px;
+      text-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
     }
-    #overlay p {
+    p {
+      color: #e0e0e0;
+      font-size: 1.2rem;
+      max-width: 500px;
+      line-height: 1.5;
+    }
+    .btn-start {
+      margin-top: 25px;
+      padding: 12px 28px;
       font-size: 1.1rem;
-      color: #e0e1dd;
-    }
-    .message-card {
-      position: absolute;
-      padding: 12px 20px;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 209, 102, 0.4);
-      border-radius: 20px;
-      backdrop-filter: blur(8px);
-      color: #fff;
-      font-weight: 600;
-      font-size: 0.95rem;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-      pointer-events: none;
-      z-index: 3;
-      white-space: nowrap;
-      animation: floatMessage 6s infinite ease-in-out;
-      opacity: 0;
-      transition: opacity 1s;
-    }
-    @keyframes floatMessage {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-12px); }
-    }
-    #music-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 10;
-      background: rgba(255, 209, 102, 0.2);
-      border: 1px solid #ffd166;
-      color: #ffd166;
-      padding: 10px 16px;
+      font-weight: bold;
+      color: #1a0f00;
+      background-color: #ffd700;
+      border: none;
       border-radius: 25px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      backdrop-filter: blur(5px);
-      display: none;
-      transition: all 0.3s ease;
-    }
-    #music-btn:hover {
-      background: #ffd166;
-      color: #0d1b2a;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
     }
   </style>
 </head>
 <body>
 
-  <button id="music-btn">🎵 Pausar Música</button>
-
-  <div id="overlay">
-    <h1>🌻 ¡Tengo unos flores amarillas para ti! 💛</h1>
-    <p>Haz clic en cualquier lugar para comenzar</p>
+  <div id="overlay" onclick="startExperience()">
+    <div class="sunflower-icon">🌻</div>
+    <h1>Para la Autoproclamada Emperatriz Dian 👑</h1>
+    <p>Decretado oficialmente por tu Majestad/Plebeyo Yerson. <br>¡Haz clic para ver tus Flores Amarillas! ✨</p>
+    <button class="btn-start">Abrir regalo 💛</button>
   </div>
 
-  <div id="canvas-container"></div>
+  <!-- Audio de fondo: Coldplay - Viva La Vida -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="https://ia801503.us.archive.org/15/items/coldplay-viva-la-vida-official-video/Coldplay%20-%20Viva%20La%20Vida%20%28Official%20Video%29.mp3" type="audio/mpeg">
+  </audio>
 
-  <!-- Audio: Viva La Vida - Coldplay -->
-  <audio id="bg-music" loop src="https://ia801503.us.archive.org/15/items/ColdplayVivaLaVida_201705/Coldplay%20-%20Viva%20La%20Vida.mp3"></audio>
-
-  <!-- Three.js CDN -->
+  <!-- Librería Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
   <script>
-    // LISTA DE FRASES PERSONALIZADAS
-    const messagesText = [
+    let scene, camera, renderer;
+    let items = [];
+    
+    // Frases y momentos especiales
+    const messages = [
       "🌻 ¡Feliz Día de las Flores Amarillas, Dian! ✨",
       "👑 Para la Emperatriz Dian de parte de Yerson 📜",
-      "👻 holiii xd GRACIAS POR TU AMISTAD❤️",
-      "🥬 ERES UNA GRAN AMIGA",
-      "🍕 QUIERO PIZZAA AAAH...!! JAJAJA😋",
-      "🤣 NO SE QUE ESCRIBIR🥹",
-      "😒 LA VACA LOLA LA VACA LOLA TIENE..... ",
+      "👻 Prohibido desaparecer como fantasma (Pacto firmado)",
+      "🥬 Si me siento mal: Modo Lechuga obligatorio",
+      "🍕 Permiso legal de invadir con comida 😋",
+      "🐒 ¿Y mi monito de la selva? 🥹",
+      "😒 La traición hermana, me cambiaste por mosquitos",
       "💛 Gracias por ser una amiga tan increíble",
+      "🤣 Nivel de suerte de Dian: Tienes a Yerson de mejor amigo 😌",
       "✨ Las mejores conversaciones desastre son contigo 💛",
-      "🤣 Tienes a Yerson de mejor amigo 😌",
-      "✨ OYE TUUU...! QUIEN YO..?",
-      "SI TU, Plebeya JAJAJA😌"
+      "🍰 Guárdame un pedazo de torta, Plebeya 😌"
     ];
 
-    let scene, camera, renderer, sunflowers = [];
-    const audio = document.getElementById('bg-music');
-    const musicBtn = document.getElementById('music-btn');
-    const overlay = document.getElementById('overlay');
-    let isPlaying = false;
-
-    // Inicialización de la escena 3D
-    function init3D() {
-      const container = document.getElementById('canvas-container');
-      scene = new THREE.Scene();
+    function createSunflowerTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 128;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
       
-      camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.z = 18;
+      // Centro marrón del girasol
+      ctx.beginPath();
+      ctx.arc(64, 64, 25, 0, Math.PI * 2);
+      ctx.fillStyle = '#3e2723';
+      ctx.fill();
+      
+      // Pétalos amarillos
+      ctx.fillStyle = '#ffca28';
+      for (let i = 0; i < 12; i++) {
+        ctx.beginPath();
+        ctx.ellipse(64 + Math.cos(i * Math.PI / 6) * 35, 64 + Math.sin(i * Math.PI / 6) * 35, 12, 6, i * Math.PI / 6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      return new THREE.CanvasTexture(canvas);
+    }
 
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    function createTextSprite(text) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 600;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+      
+      ctx.font = 'Bold 24px sans-serif';
+      ctx.fillStyle = '#ffd700';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = '#ff6f00';
+      ctx.shadowBlur = 10;
+      ctx.fillText(text, 300, 64);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+      const sprite = new THREE.Sprite(spriteMaterial);
+      sprite.scale.set(7, 1.5, 1);
+      return sprite;
+    }
+
+    function init() {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 10;
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(window.devicePixelRatio);
-      container.appendChild(renderer.domElement);
+      document.body.appendChild(renderer.domElement);
 
-      // Iluminación
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-      scene.add(ambientLight);
+      const flowerTexture = createSunflowerTexture();
+      const flowerMaterial = new THREE.SpriteMaterial({ map: flowerTexture });
 
-      const dirLight = new THREE.DirectionalLight(0xffd166, 1.2);
-      dirLight.position.set(10, 20, 15);
-      scene.add(dirLight);
+      for (let i = 0; i < 65; i++) {
+        const flower = new THREE.Sprite(flowerMaterial);
+        flower.position.x = (Math.random() - 0.5) * 26;
+        flower.position.y = (Math.random() - 0.5) * 26;
+        flower.position.z = -Math.random() * 90;
+        flower.scale.set(2.2, 2.2, 1);
+        scene.add(flower);
+        items.push(flower);
 
-      const pointLight = new THREE.PointLight(0xffaa00, 1, 30);
-      pointLight.position.set(0, 0, 10);
-      scene.add(pointLight);
-
-      // Crear varios girasoles
-      for (let i = 0; i < 7; i++) {
-        const sunflower = createSunflower();
-        sunflower.position.x = (Math.random() - 0.5) * 22;
-        sunflower.position.y = (Math.random() - 0.5) * 14;
-        sunflower.position.z = (Math.random() - 0.5) * 10;
-        
-        const scale = 0.7 + Math.random() * 0.5;
-        sunflower.scale.set(scale, scale, scale);
-
-        sunflower.userData = {
-          rotSpeedX: (Math.random() - 0.5) * 0.008,
-          rotSpeedY: (Math.random() - 0.5) * 0.01,
-          floatOffset: Math.random() * Math.PI * 2
-        };
-
-        scene.add(sunflower);
-        sunflowers.push(sunflower);
+        if (i % 2 === 0) {
+          const textMsg = messages[Math.floor(Math.random() * messages.length)];
+          const textSprite = createTextSprite(textMsg);
+          textSprite.position.x = (Math.random() - 0.5) * 22;
+          textSprite.position.y = (Math.random() - 0.5) * 22;
+          textSprite.position.z = flower.position.z + 1.5;
+          scene.add(textSprite);
+          items.push(textSprite);
+        }
       }
 
-      window.addEventListener('resize', onWindowResize);
+      const particlesGeo = new THREE.BufferGeometry();
+      const count = 350;
+      const posArray = new Float32Array(count * 3);
+      for (let i = 0; i < count * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 60;
+      }
+      particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+      const particlesMat = new THREE.PointsMaterial({ size: 0.12, color: 0xffeb3b });
+      const particlesMesh = new THREE.Points(particlesGeo, particlesMat);
+      scene.add(particlesMesh);
+
       animate();
     }
 
-    // Construcción del modelo 3D de Girasol
-    function createSunflower() {
-      const group = new THREE.Group();
-
-      // Centro (Semillas)
-      const centerGeo = new THREE.CylinderGeometry(1.5, 1.4, 0.3, 32);
-      const centerMat = new THREE.MeshStandardMaterial({ color: 0x3d2314, roughness: 0.9 });
-      const center = new THREE.Mesh(centerGeo, centerMat);
-      center.rotation.x = Math.PI / 2;
-      group.add(center);
-
-      // Pétalos
-      const petalCount = 21;
-      const petalGeo = new THREE.ConeGeometry(0.35, 2.2, 8);
-      petalGeo.translate(0, 1.1, 0);
-      const petalMat = new THREE.MeshStandardMaterial({ 
-        color: 0xffb703, 
-        roughness: 0.4,
-        metalness: 0.1 
-      });
-
-      for (let i = 0; i < petalCount; i++) {
-        const angle = (i / petalCount) * Math.PI * 2;
-        const petal = new THREE.Mesh(petalGeo, petalMat);
-        petal.rotation.z = angle;
-        petal.rotation.x = 0.15;
-        petal.position.x = Math.cos(angle) * 1.3;
-        petal.position.y = Math.sin(angle) * 1.3;
-        group.add(petal);
-      }
-
-      // Tallo
-      const stemGeo = new THREE.CylinderGeometry(0.12, 0.12, 6, 12);
-      const stemMat = new THREE.MeshStandardMaterial({ color: 0x2a9d8f });
-      const stem = new THREE.Mesh(stemGeo, stemMat);
-      stem.position.set(0, -3, -0.3);
-      group.add(stem);
-
-      return group;
-    }
-
-    // Bucle de animación
-    function animate(time) {
+    function animate() {
       requestAnimationFrame(animate);
 
-      sunflowers.forEach((sf, index) => {
-        sf.rotation.x += sf.userData.rotSpeedX;
-        sf.rotation.y += sf.userData.rotSpeedY;
-        sf.position.y += Math.sin(time * 0.0015 + sf.userData.floatOffset) * 0.005;
+      items.forEach(item => {
+        item.position.z += 0.08;
+        if (item.position.z > 10) {
+          item.position.z = -80;
+        }
       });
 
       renderer.render(scene, camera);
     }
 
-    function onWindowResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-
-    // Desplegar tarjetas de mensajes en la pantalla
-    function createMessageCards() {
-      messagesText.forEach((text, i) => {
-        const card = document.createElement('div');
-        card.className = 'message-card';
-        card.innerText = text;
-
-        // Distribución aleatoria en pantalla
-        const top = 10 + Math.random() * 75;
-        const left = 5 + Math.random() * 70;
-        card.style.top = `${top}%`;
-        card.style.left = `${left}%`;
-        card.style.animationDelay = `${i * 0.4}s`;
-
-        document.body.appendChild(card);
-
-        setTimeout(() => {
-          card.style.opacity = '1';
-        }, i * 300);
-      });
-    }
-
-    // Control de interacción y audio
-    overlay.addEventListener('click', () => {
+    function startExperience() {
+      const overlay = document.getElementById('overlay');
       overlay.style.opacity = '0';
-      setTimeout(() => {
-        overlay.style.display = 'none';
-      }, 1000);
+      setTimeout(() => overlay.style.display = 'none', 1000);
+      
+      const audio = document.getElementById('bg-music');
+      audio.play().catch(e => console.log("Error al reproducir audio:", e));
 
-      audio.play().then(() => {
-        isPlaying = true;
-        musicBtn.style.display = 'block';
-      }).catch(err => console.log("Audio play blocked:", err));
+      init();
+    }
 
-      init3D();
-      createMessageCards();
-    });
-
-    musicBtn.addEventListener('click', () => {
-      if (isPlaying) {
-        audio.pause();
-        musicBtn.innerText = '🎵 Reproducir Música';
-      } else {
-        audio.play();
-        musicBtn.innerText = '🎵 Pausar Música';
+    window.addEventListener('resize', () => {
+      if (camera && renderer) {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
       }
-      isPlaying = !isPlaying;
     });
   </script>
 </body>
