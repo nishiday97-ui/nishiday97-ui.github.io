@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flores Amarillas para Dian 🌻✨</title>
+  <title>Para mi mejor amiga 🌻</title>
   <style>
     body {
       margin: 0;
@@ -22,12 +22,10 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: rgba(0, 0, 0, 0.88);
+      background: rgba(0, 0, 0, 0.85);
       z-index: 10;
       transition: opacity 1s ease;
       cursor: pointer;
-      text-align: center;
-      padding: 20px;
     }
     .sunflower-icon {
       font-size: 80px;
@@ -39,26 +37,13 @@
     }
     h1 {
       color: #ffd700;
-      font-size: 2.2rem;
+      font-size: 2rem;
       margin-top: 20px;
-      text-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
     }
     p {
       color: #e0e0e0;
-      font-size: 1.2rem;
-      max-width: 500px;
-      line-height: 1.5;
-    }
-    .btn-start {
-      margin-top: 25px;
-      padding: 12px 28px;
       font-size: 1.1rem;
-      font-weight: bold;
-      color: #1a0f00;
-      background-color: #ffd700;
-      border: none;
-      border-radius: 25px;
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
     }
   </style>
 </head>
@@ -66,35 +51,28 @@
 
   <div id="overlay" onclick="startExperience()">
     <div class="sunflower-icon">🌻</div>
-    <h1>Para la Autoproclamada Emperatriz Dian 👑</h1>
-    <p>Decretado oficialmente por tu Majestad/Plebeyo Yerson. <br>¡Haz clic para ver tus Flores Amarillas! ✨</p>
-    <button class="btn-start">Abrir regalo 💛</button>
+    <h1>Tengo unas flores amarillas para ti</h1>
+    <p>Haz clic para abrir tu regalo ✨</p>
   </div>
 
-  <!-- Audio de fondo: Coldplay - Viva La Vida -->
-  <audio id="bg-music" loop preload="auto">
-    <source src="https://ia801503.us.archive.org/15/items/coldplay-viva-la-vida-official-video/Coldplay%20-%20Viva%20La%20Vida%20%28Official%20Video%29.mp3" type="audio/mpeg">
+  <audio id="bg-music" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- Librería Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
     let scene, camera, renderer;
     let items = [];
     
-    // Frases y momentos especiales
+    // Frases dedicadas para tu mejor amiga
     const messages = [
-      "🌻 ¡Feliz Día de las Flores Amarillas, Dian! ✨",
-      "👑 Para la Emperatriz Dian de parte de Yerson 📜",
-      "👻 Prohibido desaparecer como fantasma (Pacto firmado)",
-      "🥬 Si me siento mal: Modo Lechuga obligatorio",
-      "🍕 Permiso legal de invadir con comida 😋",
-      "🐒 ¿Y mi monito de la selva? 🥹",
-      "😒 La traición hermana, me cambiaste por mosquitos",
-      "💛 Gracias por ser una amiga tan increíble",
-      "🤣 Nivel de suerte de Dian: Tienes a Yerson de mejor amigo 😌",
-      "✨ Las mejores conversaciones desastre son contigo 💛",
-      "🍰 Guárdame un pedazo de torta, Plebeya 😌"
+      "🌻 Feliz Día de las Flores Amarillas",
+      "✨ Eres la mejor amiga del mundo",
+      "💛 Gracias por tu amistad incondicional",
+      "🌟 Siempre me sacas una sonrisa",
+      "🌻 Nunca dejes de brillar",
+      "💛 Contigo todo es mejor",
+      "✨ Gracias por existir"
     ];
 
     function createSunflowerTexture() {
@@ -103,7 +81,7 @@
       canvas.height = 128;
       const ctx = canvas.getContext('2d');
       
-      // Centro marrón del girasol
+      // Centro marrón
       ctx.beginPath();
       ctx.arc(64, 64, 25, 0, Math.PI * 2);
       ctx.fillStyle = '#3e2723';
@@ -121,21 +99,21 @@
 
     function createTextSprite(text) {
       const canvas = document.createElement('canvas');
-      canvas.width = 600;
+      canvas.width = 512;
       canvas.height = 128;
       const ctx = canvas.getContext('2d');
       
-      ctx.font = 'Bold 24px sans-serif';
+      ctx.font = 'Bold 28px sans-serif';
       ctx.fillStyle = '#ffd700';
       ctx.textAlign = 'center';
       ctx.shadowColor = '#ff6f00';
-      ctx.shadowBlur = 10;
-      ctx.fillText(text, 300, 64);
+      ctx.shadowBlur = 8;
+      ctx.fillText(text, 256, 64);
 
       const texture = new THREE.CanvasTexture(canvas);
       const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
       const sprite = new THREE.Sprite(spriteMaterial);
-      sprite.scale.set(7, 1.5, 1);
+      sprite.scale.set(6, 1.5, 1);
       return sprite;
     }
 
@@ -151,34 +129,38 @@
       const flowerTexture = createSunflowerTexture();
       const flowerMaterial = new THREE.SpriteMaterial({ map: flowerTexture });
 
-      for (let i = 0; i < 65; i++) {
+      // Generar tunel de girasoles y textos
+      for (let i = 0; i < 60; i++) {
+        // Girasol 3D
         const flower = new THREE.Sprite(flowerMaterial);
-        flower.position.x = (Math.random() - 0.5) * 26;
-        flower.position.y = (Math.random() - 0.5) * 26;
-        flower.position.z = -Math.random() * 90;
-        flower.scale.set(2.2, 2.2, 1);
+        flower.position.x = (Math.random() - 0.5) * 25;
+        flower.position.y = (Math.random() - 0.5) * 25;
+        flower.position.z = -Math.random() * 80;
+        flower.scale.set(2, 2, 1);
         scene.add(flower);
         items.push(flower);
 
-        if (i % 2 === 0) {
+        // Frase aleatoria
+        if (i % 3 === 0) {
           const textMsg = messages[Math.floor(Math.random() * messages.length)];
           const textSprite = createTextSprite(textMsg);
-          textSprite.position.x = (Math.random() - 0.5) * 22;
-          textSprite.position.y = (Math.random() - 0.5) * 22;
-          textSprite.position.z = flower.position.z + 1.5;
+          textSprite.position.x = (Math.random() - 0.5) * 20;
+          textSprite.position.y = (Math.random() - 0.5) * 20;
+          textSprite.position.z = flower.position.z + 1;
           scene.add(textSprite);
           items.push(textSprite);
         }
       }
 
+      // Añadir luces brillantes de fondo
       const particlesGeo = new THREE.BufferGeometry();
-      const count = 350;
+      const count = 300;
       const posArray = new Float32Array(count * 3);
       for (let i = 0; i < count * 3; i++) {
-        posArray[i] = (Math.random() - 0.5) * 60;
+        posArray[i] = (Math.random() - 0.5) * 50;
       }
       particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-      const particlesMat = new THREE.PointsMaterial({ size: 0.12, color: 0xffeb3b });
+      const particlesMat = new THREE.PointsMaterial({ size: 0.1, color: 0xffeb3b });
       const particlesMesh = new THREE.Points(particlesGeo, particlesMat);
       scene.add(particlesMesh);
 
@@ -188,10 +170,11 @@
     function animate() {
       requestAnimationFrame(animate);
 
+      // Desplazamiento de los objetos hacia la cámara para dar efecto de túnel infinito
       items.forEach(item => {
         item.position.z += 0.08;
         if (item.position.z > 10) {
-          item.position.z = -80;
+          item.position.z = -70;
         }
       });
 
@@ -204,7 +187,7 @@
       setTimeout(() => overlay.style.display = 'none', 1000);
       
       const audio = document.getElementById('bg-music');
-      audio.play().catch(e => console.log("Error al reproducir audio:", e));
+      audio.play();
 
       init();
     }
