@@ -59,7 +59,6 @@
       border: none;
       border-radius: 25px;
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-      cursor: pointer;
     }
   </style>
 </head>
@@ -74,7 +73,7 @@
 
   <!-- Audio de fondo: Coldplay - Viva La Vida -->
   <audio id="bg-music" loop preload="auto">
-    <source src="https://ia801503.us.archive.org/15/items/ColdplayVivaLaVida_201705/Coldplay%20-%20Viva%20La%20Vida.mp3" type="audio/mpeg">
+    <source src="https://ia801503.us.archive.org/15/items/coldplay-viva-la-vida-official-video/Coldplay%20-%20Viva%20La%20Vida%20%28Official%20Video%29.mp3" type="audio/mpeg">
   </audio>
 
   <!-- Librería Three.js -->
@@ -83,20 +82,19 @@
     let scene, camera, renderer;
     let items = [];
     
-    // Frases y momentos especiales (Sintaxis corregida)
+    // Frases y momentos especiales
     const messages = [
       "🌻 ¡Feliz Día de las Flores Amarillas, Dian! ✨",
       "👑 Para la Emperatriz Dian de parte de Yerson 📜",
-      "👻 holiii xd GRACIAS POR TU AMISTAD❤️",
-      "🥬 ERES UNA GRAN AMIGA",
-      "🍕 QUIERO PIZZAA AAAH...!! JAJAJA😋",
-      "🤣 NO SE QUE ESCRIBIR🥹",
-      "😒 LA VACA LOLA LA VACA LOLA TIENE..... ",
+      "👻 Prohibido desaparecer como fantasma (Pacto firmado)",
+      "🥬 Si me siento mal: Modo Lechuga obligatorio",
+      "🍕 Permiso legal de invadir con comida 😋",
+      "🐒 ¿Y mi monito de la selva? 🥹",
+      "😒 La traición hermana, me cambiaste por mosquitos",
       "💛 Gracias por ser una amiga tan increíble",
+      "🤣 Nivel de suerte de Dian: Tienes a Yerson de mejor amigo 😌",
       "✨ Las mejores conversaciones desastre son contigo 💛",
-      "🤣 Tienes a Yerson de mejor amigo 😌",
-      "✨ OYE TUUU...! QUIEN YO..?",
-      "SI TU, Plebeya JAJAJA😌"
+      "🍰 Guárdame un pedazo de torta, Plebeya 😌"
     ];
 
     function createSunflowerTexture() {
